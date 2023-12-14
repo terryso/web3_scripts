@@ -1,0 +1,10 @@
+[
+  {
+    "privateKey": "your private key 1",
+    "transferTimes": 2 
+  },
+  {
+    "privateKey": "your private key 2",
+    "transferTimes": 3
+  }
+]
