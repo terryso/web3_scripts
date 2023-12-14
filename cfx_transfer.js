@@ -1,5 +1,6 @@
 const { ethers, JsonRpcProvider } = require('ethers');
-const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
+// const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
+const provider = new JsonRpcProvider('https://cfx-espace.unifra.io/v1/065d8b417ec041f7a68ab3bc1b3c8bb4');
 const walletsConfig = require('./wallets.json');
 
 // 合约地址
@@ -14,36 +15,48 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// 获取当前主网 gas 价格
+async function getGasPrice() {
+  const gasPrice = (await provider.getFeeData()).gasPrice;
+  return gasPrice;
+}
+
+// 获取链上实时 gasLimit
+async function getGasLimit(hexData, address) {
+  const gasLimit = await provider.estimateGas({
+    to: address,
+    value: ethers.utils.parseEther("0"),
+    data: hexData,
+  });
+
+  return gasLimit.toNumber();
+}
+
 async function transferCfxMultiple(wallets) {
   const promises = wallets.map(({ wallet, transferTimes }) =>
     (async () => {
       for (let i = 0; i < transferTimes; i++) {
         try {
+          // 获取实时 gasPrice
+          const currentGasPrice = await getGasPrice();
+          const gasMultiple = BigInt(Math.floor(1.05 * 100));
+          const increasedGasPrice = currentGasPrice * gasMultiple / BigInt(100);
           const nonce = await provider.getTransactionCount(wallet.address);
           const tx = {
             to: receiverAddress,
             value: 0,
-            nonce: nonce
+            nonce: nonce,
+            gasPrice: increasedGasPrice
           };
 
           const txResponse = await wallet.sendTransaction(tx);
-          console.log(`Wallet ${wallet.address} Transaction ${i + 1} hash: ${txResponse.hash}`);
+          console.log(`Wallet ${wallet.address} Transaction ${i + 1} hash: ${txResponse.hash} gasPrice: ${increasedGasPrice.toString()}`);
           await delay(2500);
 
-          let receipt;
-          let retries = 5;
-          while (retries--) {
-            try {
-              receipt = await txResponse.wait();
-              console.log(`Wallet ${wallet.address} Transaction ${i + 1} was confirmed in block ${receipt.blockNumber}`);
-              await delay(2500);
-              break;
-            } catch (error) {
-              if (retries === 0) throw error;
-              console.error(`Error with transaction ${i + 1} from wallet ${wallet.address}, retrying...`, error);
-              await delay(2500); // 添加延迟
-            }
-          }
+          receipt = await txResponse.wait();
+          console.log(`Wallet ${wallet.address} Transaction ${i + 1} was confirmed in block ${receipt.blockNumber}`);
+          await delay(2500);
+
         } catch (error) {
           console.error(`Error with transaction ${i + 1} from wallet ${wallet.address}:`, error);
         }
