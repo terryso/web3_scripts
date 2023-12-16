@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "privateKey": "your core private key 2",
+        "transferTimes": 1
+    },
+    {
+        "id": 2,
+        "privateKey": "your core private key 2",
+        "transferTimes": 1
+    }
+]

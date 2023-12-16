@@ -1,6 +1,6 @@
 const { ethers, JsonRpcProvider } = require('ethers');
 // const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
-const provider = new JsonRpcProvider('https://cfx-espace.unifra.io/v1/065d8b417ec041f7a68ab3bc1b3c8bb4');
+const provider = new JsonRpcProvider('https://cfx-espace.unifra.io/v1/3509b1d1da924aa88852360875ebd7db');
 const walletsConfig = require('./wallets.json');
 
 // 合约地址
