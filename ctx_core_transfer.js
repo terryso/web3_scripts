@@ -15,7 +15,6 @@ const cfxsContract = new Contract(receiverAddress, abi, evmProvider)
 
 const cfx = new Conflux({
     url: 'https://main.confluxrpc.com',
-    // url: 'https://cfx-core.unifra.io/v1/0a2b2a27a18f4f3ba81ef1342b3f9d2c',
     networkId: 1029,
 });
 
