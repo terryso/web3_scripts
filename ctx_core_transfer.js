@@ -44,7 +44,7 @@ async function transferCfxMultiple(wallets) {
             const crossSpaceCall = cfx.InternalContract("CrossSpaceCall");
             const txHash = await crossSpaceCall.transferEVM(receiverAddress).sendTransaction({
                 from: wallet,
-                gasPrice: Drip.fromGDrip(170),
+                gasPrice: Drip.fromGDrip(190),
                 nonce: nonce
             });
             console.log(`Wallet ${mapAddress} Transaction ${i + 1} hash: ${txHash} nonce: ${nonce}`);

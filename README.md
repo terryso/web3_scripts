@@ -2,6 +2,10 @@
 > 合约地址： https://evm.confluxscan.net/address/0xc6e865c213c89ca42a622c5572d19f00d84d7a16
 > 
 
+## 如果觉这个脚本对你有用，麻烦打赏几个CFX买杯咖啡
+1. CORE主网地址： cfx:aat673917eaz2mxbuhg4vmgdp46xaezewj75u240wy
+2. eSpace主网地址： 0x092624060A4f14182800304563a3147f4b3A4Ea1
+
 ## 如何使用
 ### core 主网的使用方式（推荐，gas只有eSpace的一半）
 1. 要求有node环境
