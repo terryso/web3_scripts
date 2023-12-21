@@ -1,11 +1,10 @@
 const { ethers, JsonRpcProvider } = require('ethers');
-// const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
-const provider = new JsonRpcProvider('https://cfx-espace.unifra.io/v1/3509b1d1da924aa88852360875ebd7db');
+const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
 const walletsConfig = require('./wallets.json');
 
 // 合约地址
 const receiverAddress = '0xc6e865c213c89ca42a622c5572d19f00d84d7a16';
-const inputData = '0x';
+const inputData = '0x646174613a2c7b2270223a22646572702d3230222c226f70223a226d696e74222c227469636b223a226465727073222c22616d74223a2231303030227d';
 
 const wallets = walletsConfig.map(config => ({
   wallet: new ethers.Wallet(config.privateKey, provider),
@@ -18,22 +17,24 @@ async function delay(ms) {
 
 // 获取当前主网 gas 价格
 async function getGasPrice() {
-  const gasPrice = (await provider.getFeeData()).gasPrice;
+  let gasPrice = (await provider.getFeeData()).gasPrice;
+  // return gasPrice
   // 增加 gasPrice
   gasPrice = gasPrice + BigInt(1);
-  return Number(gasPrice);
+  return BigInt(gasPrice);
 }
 
 // 获取链上实时 gasLimit
 async function getGasLimit(hexData, address) {
-  const gasLimit = await provider.estimateGas({
+  let gasLimit = await provider.estimateGas({
     to: address,
-    value: ethers.utils.parseEther("0"),
+    value: 0,
     data: hexData,
   });
+  // return gasLimit
   // 增加 gasLimit
   gasLimit = gasLimit + BigInt(1);
-  return Number(gasLimit);
+  return BigInt(gasLimit);
 }
 
 async function transferCfxMultiple(wallets) {
@@ -48,7 +49,7 @@ async function transferCfxMultiple(wallets) {
           const currentGasLimit = await getGasLimit(inputData, receiverAddress);
           const nonce = await provider.getTransactionCount(wallet.address);
           const tx = {
-            to: receiverAddress,
+            to: wallet.address,
             value: 0,
             nonce: nonce,
             gasPrice: increasedGasPrice,
@@ -57,7 +58,7 @@ async function transferCfxMultiple(wallets) {
           };
 
           const txResponse = await wallet.sendTransaction(tx);
-          console.log(`Wallet ${wallet.address} Transaction ${i + 1} hash: ${txResponse.hash} gasPrice: ${increasedGasPrice.toString()}`);
+          console.log(`Wallet ${wallet.address} Transaction ${i + 1} hash: ${txResponse.hash} gasPrice: ${increasedGasPrice.toString()} gasLimit: ${currentGasLimit.toString()}`);
           await delay(2500);
 
           receipt = await txResponse.wait();
@@ -81,7 +82,7 @@ async function run() {
     } catch (error) {
       console.error('Error in transferCfxMultiple:', error);
     }
-    await delay(5000); // 等待一段时间再次运行，以避免过于频繁的请求
+    await delay(20000); // 等待一段时间再次运行，以避免过于频繁的请求
   }
 }
 
