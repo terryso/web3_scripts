@@ -44,7 +44,7 @@ async function transferCfxMultiple(wallets) {
             const crossSpaceCall = cfx.InternalContract("CrossSpaceCall");
             const txHash = await crossSpaceCall.transferEVM(receiverAddress).sendTransaction({
                 from: wallet,
-                gasPrice: Drip.fromGDrip(190),
+                gasPrice: Drip.fromGDrip(335),
                 nonce: nonce
             });
             console.log(`Wallet ${mapAddress} Transaction ${i + 1} hash: ${txHash} nonce: ${nonce}`);
@@ -55,7 +55,7 @@ async function transferCfxMultiple(wallets) {
               receipt = await cfx.getTransactionReceipt(txHash);
               if (receipt === null) {
                 console.log(`Waiting for receipt of transaction ${txHash}...`);
-                await new Promise(resolve => setTimeout(resolve, 10000)); // 等待10秒再次检查
+                await new Promise(resolve => setTimeout(resolve, 13000)); // 等待10秒再次检查
               }
             }
             console.log(`Wallet ${mapAddress} Transaction ${i + 1} was confirmed`);

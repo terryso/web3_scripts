@@ -5,6 +5,7 @@ const walletsConfig = require('./wallets.json');
 
 // 合约地址
 const receiverAddress = '0xc6e865c213c89ca42a622c5572d19f00d84d7a16';
+const inputData = '0x';
 
 const wallets = walletsConfig.map(config => ({
   wallet: new ethers.Wallet(config.privateKey, provider),
@@ -18,7 +19,9 @@ async function delay(ms) {
 // 获取当前主网 gas 价格
 async function getGasPrice() {
   const gasPrice = (await provider.getFeeData()).gasPrice;
-  return gasPrice;
+  // 增加 gasPrice
+  gasPrice = gasPrice + BigInt(1);
+  return Number(gasPrice);
 }
 
 // 获取链上实时 gasLimit
@@ -28,8 +31,9 @@ async function getGasLimit(hexData, address) {
     value: ethers.utils.parseEther("0"),
     data: hexData,
   });
-
-  return gasLimit.toNumber();
+  // 增加 gasLimit
+  gasLimit = gasLimit + BigInt(1);
+  return Number(gasLimit);
 }
 
 async function transferCfxMultiple(wallets) {
@@ -41,12 +45,15 @@ async function transferCfxMultiple(wallets) {
           const currentGasPrice = await getGasPrice();
           const gasMultiple = BigInt(Math.floor(1.05 * 100));
           const increasedGasPrice = currentGasPrice * gasMultiple / BigInt(100);
+          const currentGasLimit = await getGasLimit(inputData, receiverAddress);
           const nonce = await provider.getTransactionCount(wallet.address);
           const tx = {
             to: receiverAddress,
             value: 0,
             nonce: nonce,
-            gasPrice: increasedGasPrice
+            gasPrice: increasedGasPrice,
+            gasLimit: currentGasLimit,
+            data: inputData,
           };
 
           const txResponse = await wallet.sendTransaction(tx);
