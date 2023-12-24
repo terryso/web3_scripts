@@ -89,49 +89,56 @@ async function callContractMethodMultiple (
 
         // 对每一组ID调用合约方法
         for (const idGroup of idGroups) {
-          // 从idGroup中排除已处理的ID
-          const newIdGroup = idGroup.filter(id => !processedIds.includes(id))
+          try {
+            // 从idGroup中排除已处理的ID
+            const newIdGroup = idGroup.filter(id => !processedIds.includes(id))
 
-          // 如果newIdGroup为空，跳过当前循环
-          if (newIdGroup.length === 0) continue
+            // 如果newIdGroup为空，跳过当前循环
+            if (newIdGroup.length === 0) continue
 
-          const nonce = await provider.getTransactionCount(wallet.address)
-          const tx = {
-            nonce: nonce,
-            gasPrice: currentGasPrice
+            const nonce = await provider.getTransactionCount(wallet.address)
+            const tx = {
+              nonce: nonce,
+              gasPrice: currentGasPrice
+            }
+
+            const contractMethodArgs = [newIdGroup]
+            const contractWithSigner = contract.connect(wallet)
+            const txResponse = await contractWithSigner[contractMethodName](
+              ...contractMethodArgs,
+              tx
+            )
+            console.log(
+              `Wallet ${wallet.address} Transaction hash: ${
+                txResponse.hash
+              } gasPrice: ${currentGasPrice.toString()}`
+            )
+            await delay(2500)
+
+            // 保存已处理的ID
+            processedIds = [...processedIds, ...newIdGroup]
+            fs.writeFileSync(
+              `${wallet.address}_processed_ids.json`,
+              JSON.stringify(processedIds)
+            )
+
+            receipt = await txResponse.wait()
+            console.log(
+              `Wallet ${wallet.address} Transaction was confirmed in block ${receipt.blockNumber}`
+            )
+            await delay(2500)
+
+            // 获取当前钱包在新合约的余额
+            const balance = await newContract.balanceOf(wallet.address)
+            console.log(
+              `Wallet ${wallet.address} balance in new contract: ${balance}`
+            )
+          } catch (error) {
+            console.error(
+              `Error with transaction from wallet ${wallet.address}:`,
+              error
+            )
           }
-
-          const contractMethodArgs = [newIdGroup]
-          const contractWithSigner = contract.connect(wallet)
-          const txResponse = await contractWithSigner[contractMethodName](
-            ...contractMethodArgs,
-            tx
-          )
-          console.log(
-            `Wallet ${wallet.address} Transaction hash: ${
-              txResponse.hash
-            } gasPrice: ${currentGasPrice.toString()}`
-          )
-          await delay(2500)
-
-          // 保存已处理的ID
-          processedIds = [...processedIds, ...newIdGroup]
-          fs.writeFileSync(
-            `${wallet.address}_processed_ids.json`,
-            JSON.stringify(processedIds)
-          )
-
-          receipt = await txResponse.wait()
-          console.log(
-            `Wallet ${wallet.address} Transaction was confirmed in block ${receipt.blockNumber}`
-          )
-          await delay(2500)
-
-          // 获取当前钱包在新合约的余额
-          const balance = await newContract.balanceOf(wallet.address)
-          console.log(
-            `Wallet ${wallet.address} balance in new contract: ${balance}`
-          )
         }
       } catch (error) {
         console.error(
