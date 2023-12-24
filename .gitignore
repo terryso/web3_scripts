@@ -133,3 +133,5 @@ wallets.json
 wallets.json.backup
 core-wallets.json
 demo/*
+.env
+*_ids.json

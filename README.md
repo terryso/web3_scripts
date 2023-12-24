@@ -7,6 +7,38 @@
 2. eSpace主网地址： 0x092624060A4f14182800304563a3147f4b3A4Ea1
 
 ## 如何使用
+
+### 一键转换新合约（eSpace网）
+1. 要求有node环境
+2. 克隆代码
+    ```
+    https://github.com/terryso/web3_scripts.git
+    ```
+3. 进入代码目录，运行
+    ```
+    npm install ethers
+    npm install axios
+    ```
+4. 配置钱包私钥，将wallets.json.example改名为wallets.json
+5. 用编辑工具打开wallets.json，将你的eSapce主网的私钥填写进去. 如果只是转换新合约，transferTimes填多少都无所谓。
+    ```json
+    [
+      {
+        "privateKey": "your private key 1",
+        "transferTimes": 2
+      },
+      {
+        "privateKey": "your private key 2",
+        "transferTimes": 3
+      }
+    ]
+    ```
+    其中privateKey代表一个钱包的私钥
+6. 运行脚本
+    ```
+    node cfx_claim.js
+    ```
+
 ### core 主网的使用方式（推荐，gas只有eSpace的一半）
 1. 要求有node环境
 2. 克隆代码
