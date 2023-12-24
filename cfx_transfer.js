@@ -1,6 +1,5 @@
 const { ethers, JsonRpcProvider } = require('ethers');
-// const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
-const provider = new JsonRpcProvider('https://opbnb-mainnet.nodereal.io/v1/59a163782d144f9ca92e8f4c7fb928d5');
+const provider = new JsonRpcProvider('https://evm.confluxrpc.com');
 const walletsConfig = require('./wallets.json');
 
 // 合约地址
