@@ -1,7 +1,7 @@
 ## 这是一个批量打CFX铭文的脚本
-> 旧合约地址： https://evm.confluxscan.net/address/0xc6e865c213c89ca42a622c5572d19f00d84d7a16
-> 新合约地址： https://evm.confluxscan.net/address/0xd3a4d837e0a7b40de0b4024fa0f93127dd47b8b8
-> 转换合约地址： https://evm.confluxscan.net/address/0x5c3c1a119300669990863861a854616ecb04b463
+> 1. 旧合约地址： https://evm.confluxscan.net/address/0xc6e865c213c89ca42a622c5572d19f00d84d7a16
+> 2. 新合约地址： https://evm.confluxscan.net/address/0xd3a4d837e0a7b40de0b4024fa0f93127dd47b8b8
+> 3. 转换合约地址： https://evm.confluxscan.net/address/0x5c3c1a119300669990863861a854616ecb04b463
 > 
 
 ## 安全说明
@@ -45,8 +45,8 @@
     node cfx_core_claim.js
     ```
 7. 已知问题
-  > 一次只能转换5个，超过5个会报outOfGas的错误，暂时还不知道原因。不介意慢一点的可以使用当前这个版本的脚本
-  > core网的gasPrice可以使用2GDrip，我自己测试，转换200个，大约需要0.8CFX
+    > 1. 一次只能转换5个，超过5个会报outOfGas的错误，暂时还不知道原因。不介意慢一点的可以使用当前这个版本的脚本
+    > 2. core网的gasPrice可以使用2GDrip，我自己测试，转换200个，大约需要0.8CFX
 
 ### 一键转换新合约（eSpace网）
 1. 要求有node环境
